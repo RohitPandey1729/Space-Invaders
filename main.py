@@ -1,27 +1,52 @@
-import pygame
+import math
+import random
 
+import pygame
+from pygame import mixer
+
+# Intialize the pygame
 pygame.init()
 
+# create the screen
 screen = pygame.display.set_mode((800, 600))
 
-pygame.display.set_caption("Space Invaders")
+# Background
+background = pygame.image.load('background.png')
 
+# Sound
+mixer.music.load("background.wav")
+mixer.music.play(-1)
+
+# Caption and Icon
+pygame.display.set_caption("Space Invader")
+
+# Player
 playerImg = pygame.image.load('player.png')
 playerX = 370
 playerY = 480
+playerX_change = 0
 
-def player ():
-    screen.blit(playerImg, (playerX, playerY))
+# Enemy
+enemyImg = []
+enemyX = []
+enemyY = []
+enemyX_change = []
+enemyY_change = []
+num_of_enemies = 6
 
-running = True
-while running:
+for i in range(num_of_enemies):
+    enemyImg.append(pygame.image.load('enemy.png'))
+    enemyX.append(random.randint(0, 736))
+    enemyY.append(random.randint(50, 150))
+    enemyX_change.append(4)
+    enemyY_change.append(40)
 
-    screen.fill((0, 0, 0))
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-            bulletImg = pygame.image.load('bullet.png')
+# Bullet
+
+# Ready - You can't see the bullet on the screen
+# Fire - The bullet is currently moving
+
+bulletImg = pygame.image.load('bullet.png')
 bulletX = 0
 bulletY = 480
 bulletX_change = 0
@@ -120,7 +145,8 @@ while running:
                 enemyY[j] = 2000
             game_over_text()
             break
-         enemyX[i] += enemyX_change[i]
+
+        enemyX[i] += enemyX_change[i]
         if enemyX[i] <= 0:
             enemyX_change[i] = 4
             enemyY[i] += enemyY_change[i]
@@ -146,8 +172,10 @@ while running:
         bulletY = 480
         bullet_state = "ready"
 
+    if bullet_state is "fire":
+        fire_bullet(bulletX, bulletY)
+        bulletY -= bulletY_change
 
-    
-
-    player()
+    player(playerX, playerY)
+    show_score(textX, testY)
     pygame.display.update()
